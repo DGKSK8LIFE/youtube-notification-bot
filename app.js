@@ -1,7 +1,8 @@
-const Client  = require('discord.js');
 const token = '[token]';
-// Instance of client
-const client = new Client();
+const Discord = require('discord.js');
+const client = new Discord.Client();
+
+
 
 // Ready bot
 client.on('ready', () => {
