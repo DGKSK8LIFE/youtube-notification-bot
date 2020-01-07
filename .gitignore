@@ -1,0 +1,6 @@
+# Bot with actual token
+bot_source.js
+# Packages
+/node_modules
+package.json
+package-lock.json
