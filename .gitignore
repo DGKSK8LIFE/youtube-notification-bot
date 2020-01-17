@@ -1,5 +1,7 @@
-# Bot with actual token
-bot_source.js
+# Secret stuff
+bot-settings.json
+client_secret.json
+
 # Packages
 /node_modules
 package.json
