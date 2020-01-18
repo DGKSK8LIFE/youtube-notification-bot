@@ -13,7 +13,6 @@ var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'youtube-nodejs-quickstart.json';
 
-
 // Load client secrets from a local file (client_secret.json)
 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
   if (err) {
@@ -106,28 +105,30 @@ function storeToken(token) {
  */
 function getChannel(auth) {
   var service = google.youtube('v3');
-  service.channels.list({
+  service.videos.list({
     auth: auth,
     part: 'snippet,contentDetails,statistics',
-    forUsername: 'PewDiePie'
+    id: 'G1WlOlat_UI' // Random video/livestream
   }, function(err, response) {
     if (err) {
       console.log('The API returned an error: ' + err);
       return;
     }
-    var channels = response.data.items;
-    var info = 'This channels ID is ' + channels[0].id + ' Its title is ' + channels[0].snippet.title + ' and it has ' + channels[0].statistics.viewCount + ' views.'
-    if (channels.length == 0) {
+    var video = response.data.items;
+    var info = 'This videos ID is ' + video[0].id + ' Its title is ' + video[0].snippet.title + ' and it has ' + video[0].statistics.viewCount + 
+    ' views currenly. The number of likes are ' + video[0].statistics.likeCount;
+    if (video.length == 0) {
       console.log('No channel found.');
     } else {
       console.log(info);
     
-    // Discord bot
-    client.on('ready', () => {
-        client.channels.find(x => x.name === 'general').send("I'd just like to interject for a moment. What you're referring to as Linux, is in fact, GNU/Linux,or as I've recently taken to calling it, GNU plus Linux.")
-        client.channels.find(x => x.name === 'general').send(info);
-    });
-    client.login(botSettings.token);
+      // Discord bot
+      client.on('ready', () => {
+          client.channels.find(x => x.name === 'general').send("I'd just like to interject for a moment. What you're referring to as Linux, " +
+          "is in fact, GNU/Linux,or as I've recently taken to calling it, GNU plus Linux.")
+          client.channels.find(x => x.name === 'general').send(info);
+      });
+      client.login(botSettings.token);
     }
   });
 }
