@@ -12,14 +12,20 @@ var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'discord-yt-likecount-bot.json';
 
-// Load client secrets from a local file (client_secret.json)
-fs.readFile('client_secret.json', function processClientSecrets(err, content) {
+function sleep(millis) {
+  return new Promise(resolve => setTimeout(resolve, millis));
+}
+
+fs.readFile('client_secret.json', async function processClientSecrets(err, content) {
   if (err) {
     console.log('Error loading client secret file: ' + err);
     return;
   }
-  // Authorize a client with the loaded credentials, then call the YouTube API.
-  authorize(JSON.parse(content), getChannel);
+
+  while (true){
+    await sleep(5000);
+    authorize(JSON.parse(content), getChannel);
+  }
 });
 
 function authorize(credentials, callback) {
@@ -28,7 +34,6 @@ function authorize(credentials, callback) {
   var redirectUrl = credentials.installed.redirect_uris[0];
   var oauth2Client = new OAuth2(clientId, clientSecret, redirectUrl);
 
-  // Check if we have previously stored a token.
   fs.readFile(TOKEN_PATH, function(err, token) {
     if (err) {
       getNewToken(oauth2Client, callback);
@@ -82,7 +87,7 @@ function getChannel(auth) {
     service.videos.list({
       auth: auth,
       part: 'snippet,contentDetails,statistics',
-      id: '8dykkHZBJF4' // Random video/livestream
+      id: 'hHW1oY26kxQ' // Random video/livestream
     }, function(err, response) {
       if (err) {
         console.log('The API returned an error: ' + err);
