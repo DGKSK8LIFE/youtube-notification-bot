@@ -2,15 +2,15 @@ const botSettings = require("./bot-settings.json");
 const Discord = require("discord.js")
 const client = new Discord.Client();
 
-var fs = require('fs');
-var readline = require('readline');
-var {google} = require('googleapis');
-var OAuth2 = google.auth.OAuth2;
+let fs = require('fs');
+let readline = require('readline');
+let {google} = require('googleapis');
+let OAuth2 = google.auth.OAuth2;
 
-var SCOPES = ['https://www.googleapis.com/auth/youtube.readonly'];
-var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
+let SCOPES = ['https://www.googleapis.com/auth/youtube.readonly'];
+let TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
-var TOKEN_PATH = TOKEN_DIR + 'discord-yt-likecount-bot.json';
+let TOKEN_PATH = TOKEN_DIR + 'discord-yt-likecount-bot.json';
 
 client.on('ready', () => {
   console.log(`${client.user.tag} is ready to roll!`);
