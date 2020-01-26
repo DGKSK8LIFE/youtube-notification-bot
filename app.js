@@ -2,6 +2,8 @@ const botSettings = require("./bot-settings.json");
 const Discord = require("discord.js")
 const client = new Discord.Client();
 
+let date = new Date();
+
 let fs = require('fs');
 let readline = require('readline');
 let {google} = require('googleapis');
@@ -31,12 +33,17 @@ client.on('message', msg => {
   const args = msg.content.slice(1).trim().split(/ +/g);
   const command = args.shift().toLowerCase();
 
+  var pst = new Date(date.getTime() -100 * 60 * 1000);
+
   if (command == 'notifyme') {
     if (!args.length) {
       msg.reply('You forgot to type the video ID!')
+    } if (args.length == 0) {
+      msg.reply('You forgot to put the number of likes!')
     }
-
-    let videoID = args.join(' ');
+    
+    let videoID = args[0];
+    let everyLikes = args[1];
 
     fs.readFile('client_secret.json', async function processClientSecrets(err, content) {
       if (err) {
@@ -101,7 +108,7 @@ client.on('message', msg => {
         console.log('Token stored to ' + TOKEN_PATH);
       });
     }
-  
+
     function getLikes(auth) {
       var service = google.youtube('v3');
         service.videos.list({
@@ -110,6 +117,7 @@ client.on('message', msg => {
           id: videoID 
         }, function(err, response) {
           if (err) {
+            printBoth('All your Google Quotas have been used for today! They renew at 12:00 PM PST (' + (24 - pst.getHours()) + ':' + pst.getMinutes() + ' hours left!)')
             printBoth('The API returned an error: ' + err);
             return;
           }
@@ -119,7 +127,7 @@ client.on('message', msg => {
           } else { 
             if (video[0].liveStreamingDetails.actualEndTime == null) { // If the livestream is still active
               console.log(video[0].snippet.channelTitle + "'s livestream has " + video[0].statistics.likeCount + " likes!");
-              if (video[0].statistics.likeCount % 10 == 0) {
+              if (video[0].statistics.likeCount % everyLikes == 0) {
                 printBoth(video[0].snippet.channelTitle + "'s livestream reached " + video[0].statistics.likeCount + " likes!");
               }
             } else { // If the livestream is not active 
@@ -130,7 +138,7 @@ client.on('message', msg => {
         });
     }
   } else if (command == 'help') {
-    msg.reply("Type '!notifyme' followed by the livestream's ID to recieve\nnotifications when the livestream's likes reach a multiple of 10.")
+    msg.reply("Type '!notifyme' followed by the livestream's ID and a number to recieve notifications when the livestream's likes reach a multiple of that number.");
   }
 })
 
