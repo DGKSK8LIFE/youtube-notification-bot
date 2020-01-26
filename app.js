@@ -94,9 +94,7 @@ client.on('message', msg => {
       try {
         fs.mkdirSync(TOKEN_DIR);
       } catch (err) {
-        if (err.code != 'EEXIST') {
-          throw err;
-        }
+        if (err.code != 'EEXIST') throw err;
       }
       fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
         if (err) throw err;
@@ -108,7 +106,7 @@ client.on('message', msg => {
       var service = google.youtube('v3');
         service.videos.list({
           auth: auth,
-          part: 'snippet,statistics',
+          part: 'snippet,statistics,liveStreamingDetails',
           id: videoID 
         }, function(err, response) {
           if (err) {
@@ -118,14 +116,21 @@ client.on('message', msg => {
           var video = response.data.items;
           if (video.length == 0) {
             printBoth('No video found.');
-          } else {
-            console.log(video[0].snippet.channelTitle + "'s livestream has " + video[0].statistics.likeCount + " likes!");
-            if (video[0].statistics.likeCount % 10 == 0) {
-              printBoth(video[0].snippet.channelTitle + "'s livestream reached " + video[0].statistics.likeCount + " likes!");
+          } else { 
+            if (video[0].liveStreamingDetails.actualEndTime == null) { // If the livestream is still active
+              console.log(video[0].snippet.channelTitle + "'s livestream has " + video[0].statistics.likeCount + " likes!");
+              if (video[0].statistics.likeCount % 10 == 0) {
+                printBoth(video[0].snippet.channelTitle + "'s livestream reached " + video[0].statistics.likeCount + " likes!");
+              }
+            } else { // If the livestream is not active
+              printBoth("The live stream has ended!")
+              delete video[0]; // Clear out the video in the array
             }
           }
         });
     }
+  } else if (command == 'help') {
+    msg.reply("Type '!notifyme' followed by the livestream's ID to recieve\nnotifications when the livestream's likes reach a multiple of 10.")
   }
 })
 
