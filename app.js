@@ -122,7 +122,7 @@ client.on('message', msg => {
               if (video[0].statistics.likeCount % 10 == 0) {
                 printBoth(video[0].snippet.channelTitle + "'s livestream reached " + video[0].statistics.likeCount + " likes!");
               }
-            } else { // If the livestream is not active
+            } else { // If the livestream is not active 
               printBoth("The live stream has ended!")
               delete video[0]; // Clear out the video in the array
             }
