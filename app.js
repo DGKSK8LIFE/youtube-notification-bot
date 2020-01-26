@@ -22,9 +22,9 @@ fs.readFile('client_secret.json', async function processClientSecrets(err, conte
     return;
   }
 
-  while (true){
+  while (true) {
     await sleep(5000);
-    authorize(JSON.parse(content), getChannel);
+    authorize(JSON.parse(content), getLikes);
   }
 });
 
@@ -82,7 +82,7 @@ function storeToken(token) {
   });
 }
 
-function getChannel(auth) {
+function getLikes(auth) {
   var service = google.youtube('v3');
     service.videos.list({
       auth: auth,
@@ -98,6 +98,9 @@ function getChannel(auth) {
         console.log('No video found.');
       } else {
         console.log("The likes on this video: '" + video[0].snippet.title + "' is " + video[0].statistics.likeCount);
+        if (video[0].statistics.likeCount % 10 == 0) {
+          console.log("The video has reached a like multiple of 10!")
+        }
       }
     });
 }
