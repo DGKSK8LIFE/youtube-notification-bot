@@ -50,10 +50,13 @@ client.on('message', msg => {
         console.log('Error loading client secret file: ' + err);
         return;
       }
-
       while (true) {
-        await sleep(5000);
         authorize(JSON.parse(content), getLikes);
+        await sleep(3000);
+
+        if (command == 'stop') { //DOSENT WORK
+          break;
+        }
       }
     });
 
